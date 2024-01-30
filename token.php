@@ -1,4 +1,5 @@
 <?php
+include_once("./database.php");
 
 $_CLIENT_ID = '0d630bdb77e576fff2d93d5018ede8e0';
 $_CLIENT_SECRET = 'd6e193f89cff97df2fbf7f0ea132921a';
@@ -28,7 +29,18 @@ if (hash_equals($hmac, $new_hmac)) {
     curl_close($curl);
 
     $response = json_decode($response, true);
-    echo print_r($response);
+    // echo print_r($response);
+    // exit();
+    // $query = "INSERT INTO shops (shop_url,access_token,install_date) VALUES ('" . $shop_url . "','" . $response['access_token'] . "',NOW())";
+    // Assuming you have a PDO connection object named $pdo
+    $query = "INSERT INTO shops (shop_url, access_token, install_date) VALUES ('" . $shop . "','" . $response['access_token'] . "',NOW())";
+
+    if ($mysql->query($query)) {
+        header("Location: https://" . $shop . '/admin/apps');
+        exit();
+    } else {
+        echo "dhuke nai";
+    }
 } else {
     echo "Something went wrong";
 }
