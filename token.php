@@ -1,8 +1,8 @@
 <?php
-include_once("./database.php");
+include_once("database.php");
 
-$_CLIENT_ID = '0d630bdb77e576fff2d93d5018ede8e0';
-$_CLIENT_SECRET = 'd6e193f89cff97df2fbf7f0ea132921a';
+$_CLIENT_ID = 'e1052bc53b05fcaa5aa07d8c10f63a1f';
+$_CLIENT_SECRET = '8428166ce43162315602c8b90e249ac6';
 $parameters = $_GET;
 $shop_url = $parameters['shop'];
 $hmac = $parameters['hmac'];
@@ -29,17 +29,21 @@ if (hash_equals($hmac, $new_hmac)) {
     curl_close($curl);
 
     $response = json_decode($response, true);
-    // echo print_r($response);
+    // echo ($response['access_token']);
     // exit();
     // $query = "INSERT INTO shops (shop_url,access_token,install_date) VALUES ('" . $shop_url . "','" . $response['access_token'] . "',NOW())";
     // Assuming you have a PDO connection object named $pdo
-    $query = "INSERT INTO shops (shop_url, access_token, install_date) VALUES ('" . $shop . "','" . $response['access_token'] . "',NOW())";
+    $query = "INSERT INTO shops (shop_url, access_token, install_date) 
+          VALUES ('" . $shop_url . "','" . $response['access_token'] . "',NOW()) 
+          ON DUPLICATE KEY UPDATE access_token = VALUES(access_token)";
+
 
     if ($mysql->query($query)) {
-        header("Location: https://" . $shop . '/admin/apps');
+        header("Location: https://" . $shop_url . '/admin/apps');
         exit();
     } else {
         echo "dhuke nai";
+        die();
     }
 } else {
     echo "Something went wrong";
